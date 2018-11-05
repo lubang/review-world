@@ -11,7 +11,6 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 val scalaVersion = "2.12"
@@ -25,15 +24,6 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
-
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.0-rc.1") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.0-rc.1") {
-        exclude(group = "org.junit.platform")
-        exclude(group = "org.jetbrains.kotlin")
-    }
-    testRuntimeOnly(kotlin("reflect"))
 }
 
 tasks.withType<KotlinCompile> {
@@ -42,6 +32,5 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform {
-        includeEngines("spek2")
     }
 }

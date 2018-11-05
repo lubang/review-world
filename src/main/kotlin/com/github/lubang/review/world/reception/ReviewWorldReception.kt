@@ -3,13 +3,41 @@ package com.github.lubang.review.world.reception
 import akka.actor.Props
 import akka.persistence.AbstractPersistentActor
 import akka.persistence.SnapshotOffer
+import com.github.lubang.review.world.collector.ReviewEngine
 import com.github.lubang.review.world.notifier.NotifierEngine
-import com.github.lubang.review.world.review.ReviewEngine
 import java.io.Serializable
 import java.time.ZonedDateTime
 
 
 class ReviewWorldReception : AbstractPersistentActor() {
+
+    companion object {
+        fun props(): Props {
+            return Props.create(ReviewWorldReception::class.java)
+        }
+    }
+
+    sealed class Command {
+        data class AddCollector(val collectorId: String,
+                                val register: String,
+                                val registeredAt: ZonedDateTime,
+                                val reviewEngine: ReviewEngine.Gerrit,
+                                val notifierEngine: NotifierEngine.Slack) : Command()
+
+        data class RemoveCollector(val collectorId: String)
+
+        object GetCollectors
+    }
+
+    sealed class Event : Serializable {
+        data class CollectorAdded(val collectorId: String,
+                                  val register: String,
+                                  val registeredAt: ZonedDateTime,
+                                  val reviewEngine: ReviewEngine.Gerrit,
+                                  val notifierEngine: NotifierEngine.Slack) : Event()
+
+        data class CollectorRemoved(val collectorId: String) : Event()
+    }
 
     private var state = ReviewWorldReceptionState()
 
@@ -26,35 +54,15 @@ class ReviewWorldReception : AbstractPersistentActor() {
 
     override fun createReceive(): Receive {
         return receiveBuilder()
+                .match(Command.GetCollectors::class.java) { onGetCollectors() }
                 .match(Command.AddCollector::class.java) { onAddCollector(it) }
                 .match(Command.RemoveCollector::class.java) { onRemoveCollector(it) }
                 .build()
     }
 
-    companion object {
-        fun props(): Props {
-            return Props.create(ReviewWorldReception::class.java)
-        }
-    }
-
-    sealed class Command {
-        data class AddCollector(val collectorId: String,
-                                val register: String,
-                                val registeredAt: ZonedDateTime,
-                                val reviewEngine: ReviewEngine.Gerrit,
-                                val notifierEngine: NotifierEngine.Slack) : Command()
-
-        data class RemoveCollector(val collectorId: String)
-    }
-
-    sealed class Event : Serializable {
-        data class CollectorAdded(val collectorId: String,
-                                  val register: String,
-                                  val registeredAt: ZonedDateTime,
-                                  val reviewEngine: ReviewEngine.Gerrit,
-                                  val notifierEngine: NotifierEngine.Slack) : Event()
-
-        data class CollectorRemoved(val collectorId: String) : Event()
+    private fun onGetCollectors() {
+        val collectors = state.getCollectors()
+        sender.tell(collectors, self)
     }
 
     private fun onAddCollector(cmd: Command.AddCollector) {
