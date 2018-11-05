@@ -52,11 +52,32 @@ object ReviewWorldReceptionSpec : Spek({
             assertEquals("unique_id", actualRemoved.collectorId)
         }
 
-        test("receive an remove collector command with the no exist id should raise no event") {
+        test("receive a remove collector command with the no exist id should raise no event") {
             reception.tell(
                     ReviewWorldReception.Command.RemoveCollector("not_exist_id"),
                     ActorRef.noSender())
-            testProbe.expectNoMsg()
+
+            testProbe.expectNoMessage()
+        }
+
+        test("receive a duplicated add command should ignore the duplicated command") {
+            val cmd = ReviewWorldReception.Command.AddCollector(
+                    "unique_id",
+                    "register_name",
+                    ZonedDateTime.parse("2018-10-19T00:00:00Z"),
+                    ReviewEngine.Gerrit(
+                            "gerrit_url",
+                            "project",
+                            "username",
+                            "password"
+                    ),
+                    NotifierEngine.Slack("webhookUrl", "channel")
+            )
+            reception.tell(cmd, ActorRef.noSender())
+            reception.tell(cmd, ActorRef.noSender())
+
+            testProbe.expectMsgClass(ReviewWorldReception.Event.CollectorAdded::class.java)
+            testProbe.expectNoMessage()
         }
     }
 })

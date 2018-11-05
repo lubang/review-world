@@ -58,6 +58,10 @@ class ReviewWorldReception : AbstractPersistentActor() {
     }
 
     private fun onAddCollector(cmd: Command.AddCollector) {
+        if (state.hasCollector(cmd.collectorId)) {
+            return
+        }
+
         val event = Event.CollectorAdded(
                 cmd.collectorId,
                 cmd.register,
