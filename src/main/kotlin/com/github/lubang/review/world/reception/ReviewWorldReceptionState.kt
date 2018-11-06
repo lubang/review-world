@@ -9,11 +9,18 @@ class ReviewWorldReceptionState {
             is ReviewWorldReception.Event.CollectorAdded -> {
                 val reviewCollectorInfo = ReviewCollectorInfo(
                         event.collectorId,
-                        ReviewCollectorInfo.State.READY)
+                        ReviewCollectorInfo.Status.READY,
+                        event.register,
+                        event.registeredAt,
+                        event.reviewEngine,
+                        event.notifierEngine)
                 collectors[event.collectorId] = reviewCollectorInfo
             }
             is ReviewWorldReception.Event.CollectorRemoved -> {
                 collectors.remove(event.collectorId)
+            }
+            is ReviewWorldReception.Event.CollectorStateChanged -> {
+                collectors[event.collectorId]?.status = event.status
             }
         }
     }
@@ -25,4 +32,10 @@ class ReviewWorldReceptionState {
     fun getCollectors(): List<ReviewCollectorInfo> {
         return collectors.values.toList()
     }
+
+    fun getCollector(collectorId: String): ReviewCollectorInfo? {
+        return collectors[collectorId]
+    }
+
+
 }

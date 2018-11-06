@@ -1,10 +1,8 @@
 package com.github.lubang.review.world.notifier
 
-import java.io.Serializable
+sealed class NotifierEngine {
 
-open class NotifierEngine : Serializable {
-
-    class Slack(val wehookUrl: String,
-                val channel: String) : NotifierEngine()
+    data class Slack(val wehookUrl: String,
+                     val channel: String) : NotifierEngine()
 
 }

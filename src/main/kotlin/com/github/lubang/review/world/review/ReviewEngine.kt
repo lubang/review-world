@@ -1,12 +1,10 @@
 package com.github.lubang.review.world.review
 
-import java.io.Serializable
+sealed class ReviewEngine {
 
-open class ReviewEngine : Serializable {
-
-    class Gerrit(val url: String,
-                 val project: String,
-                 val username: String,
-                 val password: String) : ReviewEngine()
+    data class Gerrit(val url: String,
+                      val project: String,
+                      val username: String,
+                      val password: String) : ReviewEngine()
 
 }
