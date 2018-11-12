@@ -4,10 +4,10 @@ import akka.actor.Props
 import akka.pattern.PatternsCS
 import akka.persistence.AbstractPersistentActor
 import akka.persistence.SnapshotOffer
-import com.github.lubang.review.world.domain.reception.fetcher.FetcherFactory
+import com.github.lubang.review.world.domain.reception.fetcher.Fetcher
 import com.github.lubang.review.world.domain.reception.status.ReceptionStatus
 
-class Reception(private val fetcherFactory: FetcherFactory)
+class Reception(private val fetcher: Fetcher)
     : AbstractPersistentActor() {
 
     private var state = ReceptionState()
@@ -62,7 +62,7 @@ class Reception(private val fetcherFactory: FetcherFactory)
         }
 
         val request = state.getRequest(command.id)
-        val fetcher = context.actorOf(fetcherFactory.props(command.id, request.fetcher))
+        val fetcher = context.actorOf(fetcher.props(command.id, request.fetcher))
         val response = PatternsCS.ask(fetcher, command, 10000)
         PatternsCS.pipe(response, context.dispatcher()).to(sender)
     }
@@ -72,8 +72,8 @@ class Reception(private val fetcherFactory: FetcherFactory)
     }
 
     companion object {
-        fun props(fetcherFactory: FetcherFactory): Props {
-            return Props.create(Reception::class.java, fetcherFactory)
+        fun props(fetcher: Fetcher): Props {
+            return Props.create(Reception::class.java, fetcher)
         }
 
         private const val RECEPTION_PERSISTENT_ID = "review-world-reception"

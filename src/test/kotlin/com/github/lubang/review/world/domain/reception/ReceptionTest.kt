@@ -5,8 +5,9 @@ import akka.actor.ActorSystem
 import akka.testkit.TestProbe
 import akka.testkit.javadsl.TestKit
 import com.github.lubang.review.world.domain.reception.status.ReceptionStatus
+import com.github.lubang.review.world.infra.FetcherFixture
 import com.github.lubang.review.world.infra.gerrit.GerritConfig
-import com.github.lubang.review.world.infra.slack.NotifierEngine
+import com.github.lubang.review.world.infra.slack.SlackConfig
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -30,7 +31,7 @@ internal class ReceptionTest {
     fun setup() {
         system = ActorSystem.create()
         testProbe = TestProbe(system)
-        reception = system.actorOf(Reception.props(FetcherFactoryFixture()))
+        reception = system.actorOf(Reception.props(FetcherFixture()))
 
         config = ReceptionConfig(
                 "lubang",
@@ -41,7 +42,7 @@ internal class ReceptionTest {
                         "review-world",
                         "lubang",
                         "password"),
-                NotifierEngine.Slack("https://webhook.slack.com/19284010", "#notify")
+                SlackConfig("https://webhook.slack.com/19284010", "#notify")
         )
         addCommand = Reception.Command.AddCommand("unique-id", config)
         removeCommand = Reception.Command.RemoveCommand("unique-id")

@@ -1,12 +1,12 @@
-package com.github.lubang.review.world.domain.reception
+package com.github.lubang.review.world.infra
 
 import akka.actor.AbstractActor
 import akka.actor.Props
-import com.github.lubang.review.world.domain.reception.fetcher.FetcherConfig
-import com.github.lubang.review.world.domain.reception.fetcher.FetcherFactory
+import com.github.lubang.review.world.domain.reception.Reception
+import com.github.lubang.review.world.domain.reception.fetcher.Fetcher
 
-class FetcherFactoryFixture : FetcherFactory {
-    override fun props(id: String, fetcherConfig: FetcherConfig): Props {
+class FetcherFixture : Fetcher {
+    override fun props(id: String, config: Fetcher.Config): Props {
         return Props.create(FetcherFixture::class.java, id)
     }
 

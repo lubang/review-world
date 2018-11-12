@@ -1,14 +1,14 @@
 package com.github.lubang.review.world.domain.reception
 
-import com.github.lubang.review.world.domain.reception.fetcher.FetcherConfig
-import com.github.lubang.review.world.infra.slack.NotifierEngine
+import com.github.lubang.review.world.domain.reception.fetcher.Fetcher
+import com.github.lubang.review.world.domain.reception.notifier.Notifier
 import java.time.ZonedDateTime
 
 data class ReceptionConfig(val register: String,
                            val registeredAt: ZonedDateTime,
                            val fetchInterval: Long,
-                           val fetcher: FetcherConfig,
-                           val notifier: NotifierEngine) {
+                           val fetcher: Fetcher.Config,
+                           val notifier: Notifier.Config) {
 
     companion object {
         private const val MIN_FETCH_INTERVAL = 10000

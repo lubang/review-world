@@ -1,7 +1,7 @@
 package com.github.lubang.review.world.domain.reception
 
 import com.github.lubang.review.world.infra.gerrit.GerritConfig
-import com.github.lubang.review.world.infra.slack.NotifierEngine
+import com.github.lubang.review.world.infra.slack.SlackConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.DisplayName
@@ -23,7 +23,7 @@ class ReceptionConfigTest {
                             "review-world",
                             "lubang",
                             "password"),
-                    NotifierEngine.Slack("https://webhook.slack.com/19284010", "#notify"))
+                    SlackConfig("https://webhook.slack.com/19284010", "#notify"))
         }
         assertEquals(
                 "ReceptionConfig `fetchInterval` should be larger than 10000 millis",
