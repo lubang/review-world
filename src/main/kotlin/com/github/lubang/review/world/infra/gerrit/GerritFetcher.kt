@@ -4,8 +4,9 @@ import akka.actor.AbstractActor
 import akka.actor.ActorRef
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpGet
+import com.github.lubang.review.world.core.Review
 import com.github.lubang.review.world.domain.reception.Reception
-import com.github.lubang.review.world.domain.review.Review
+import com.github.lubang.review.world.domain.reception.fetcher.Fetcher
 import com.google.gson.Gson
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -40,6 +41,7 @@ class GerritFetcher(
                         val reviews = changes
                                 ?.map { parseToReviews(it) }
                                 ?.toList()
+                        sendToReviewRouter(reviews)
                         fetchResponse(
                                 originSender,
                                 true,
@@ -60,6 +62,13 @@ class GerritFetcher(
                 change.getCreatedAt(),
                 change.getUpdatedAt()
         )
+    }
+
+    private fun sendToReviewRouter(reviews: List<Review>?) {
+        reviews?.forEach {
+            context.system.eventStream()
+                    .publish(Fetcher.Event.ReviewFetched(id, it))
+        }
     }
 
     private fun fetchResponse(sender: ActorRef, isSuccess: Boolean, reason: String, size: Int) {

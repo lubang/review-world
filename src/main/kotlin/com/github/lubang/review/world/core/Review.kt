@@ -1,4 +1,4 @@
-package com.github.lubang.review.world.domain.review
+package com.github.lubang.review.world.core
 
 import java.time.ZonedDateTime
 

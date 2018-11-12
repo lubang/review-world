@@ -4,6 +4,8 @@ import akka.actor.ActorRef
 import akka.actor.ActorSystem
 import akka.testkit.TestProbe
 import akka.testkit.javadsl.TestKit
+import com.github.lubang.review.world.core.Review
+import com.github.lubang.review.world.domain.reception.fetcher.Fetcher
 import com.github.lubang.review.world.domain.reception.status.ReceptionStatus
 import com.github.lubang.review.world.infra.FetcherFixture
 import com.github.lubang.review.world.infra.gerrit.GerritConfig
@@ -110,14 +112,28 @@ internal class ReceptionTest {
     }
 
     @Test
-    fun `receive a fetch command should return a fetch response`() {
+    fun `receive a fetch command should return a fetch response and raise a ReviewFetched event`() {
+        system.eventStream()
+                .subscribe(testProbe.ref(), Fetcher.Event::class.java)
         reception.tell(addCommand, mockSender.ref())
 
         testProbe.send(reception, Reception.Command.FetchCommand(addCommand.id))
 
         testProbe.expectMsg(
-                Duration.create(10, TimeUnit.SECONDS),
-                Reception.Command.FetchResponse(addCommand.id, true, "", 7))
+                Duration.create(3, TimeUnit.SECONDS),
+                Fetcher.Event.ReviewFetched(addCommand.id, Review(
+                        "mock_review_id",
+                        "mock_review_id",
+                        "mock_project",
+                        "mock_branch",
+                        "mock_subject",
+                        "mock_owner",
+                        ZonedDateTime.parse("2018-10-19T00:00:00Z"),
+                        ZonedDateTime.parse("2018-10-19T00:00:00Z")
+                )))
+        testProbe.expectMsg(
+                Duration.create(3, TimeUnit.SECONDS),
+                Reception.Command.FetchResponse(addCommand.id, true, "", 1))
     }
 
     @Test
@@ -125,7 +141,7 @@ internal class ReceptionTest {
         testProbe.send(reception, Reception.Command.FetchCommand("nonexistent-id"))
 
         testProbe.expectMsg(
-                Duration.create(10, TimeUnit.SECONDS),
+                Duration.create(3, TimeUnit.SECONDS),
                 Reception.Command.FetchResponse(
                         "nonexistent-id",
                         false,
