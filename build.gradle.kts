@@ -11,16 +11,20 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 val scalaVersion = "2.12"
 val akkaVersion = "2.5.17"
+val fuelVersion = "1.16.0"
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile("com.typesafe.akka:akka-actor_$scalaVersion:$akkaVersion")
     testCompile("com.typesafe.akka:akka-testkit_$scalaVersion:$akkaVersion")
     compile("com.typesafe.akka:akka-persistence_$scalaVersion:$akkaVersion")
+    compile("com.github.kittinunf.fuel:fuel:$fuelVersion")
+    compile("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
