@@ -19,11 +19,11 @@ class GerritFetcher(
 
     override fun createReceive(): Receive {
         return receiveBuilder()
-                .matchEquals(Reception.Command.FetchCommand(id)) { fetchRequest() }
+                .matchEquals(Reception.Command.FetchCommand(id)) { fetch() }
                 .build()
     }
 
-    private fun fetchRequest() {
+    private fun fetch() {
         val originSender = sender
         val url = "${fetcher.url}/r/a/changes/?q=project:${fetcher.project}+status:open"
         url.httpGet()
@@ -32,7 +32,7 @@ class GerritFetcher(
                     val (changes, err) = result
 
                     if (err != null) {
-                        fetchResponse(
+                        responseFetchResult(
                                 originSender,
                                 false,
                                 err.message ?: "",
@@ -42,7 +42,7 @@ class GerritFetcher(
                                 ?.map { parseToReviews(it) }
                                 ?.toList()
                         sendToReviewRouter(reviews)
-                        fetchResponse(
+                        responseFetchResult(
                                 originSender,
                                 true,
                                 "",
@@ -71,7 +71,7 @@ class GerritFetcher(
         }
     }
 
-    private fun fetchResponse(sender: ActorRef, isSuccess: Boolean, reason: String, size: Int) {
+    private fun responseFetchResult(sender: ActorRef, isSuccess: Boolean, reason: String, size: Int) {
         val response = Reception.Command.FetchResponse(id, isSuccess, reason, size)
         sender.tell(response, self)
     }
