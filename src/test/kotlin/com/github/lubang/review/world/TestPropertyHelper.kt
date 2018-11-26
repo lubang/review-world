@@ -14,6 +14,18 @@ object TestPropertyHelper {
     val githubPassword
         get() = getFileOrEnv("GITHUB_PASSWORD")
 
+    val gerritUrl
+        get() = getFileOrEnv("GERRIT_URL")
+
+    val gerritProject
+        get() = getFileOrEnv("GERRIT_PROJECT")
+
+    val gerritUsername
+        get() = getFileOrEnv("GERRIT_USERNAME")
+
+    val gerritPassword
+        get() = getFileOrEnv("GERRIT_PASSWORD")
+
     val slackWebhook
         get() = getFileOrEnv("SLACK_WEBHOOK")
 

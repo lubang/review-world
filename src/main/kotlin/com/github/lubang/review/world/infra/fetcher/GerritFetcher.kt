@@ -22,7 +22,7 @@ class GerritFetcher : AbstractActor() {
     private fun fetch(streamlineId: String, config: Config) {
         val originSender = sender
 
-        val url = "${config.url}/r/a/changes/?q=project:${config.project}+statuses:open"
+        val url = "${config.url}/r/a/changes/?q=project:${config.project}+status:open"
         url.httpGet()
                 .authenticate(config.username, config.password)
                 .responseObject(Deserializer()) { _, _, result ->
