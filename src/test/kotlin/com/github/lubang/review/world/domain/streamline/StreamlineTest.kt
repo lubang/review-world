@@ -65,7 +65,7 @@ internal class StreamlineTest {
                 command.fetcherConfig,
                 command.notifiersConfig))
 
-        testProbe.send(streamline, Streamline.Command.GetStatus)
+        testProbe.send(streamline, Streamline.Query.GetStatus)
         testProbe.expectMsg(StreamlineState.Status.CREATED)
     }
 
@@ -74,7 +74,7 @@ internal class StreamlineTest {
         testProbe.send(streamline, Streamline.Command.Destroy)
         eventSubscriber.expectMsg(Streamline.Event.Destroyed("streamline_id"))
 
-        testProbe.send(streamline, Streamline.Command.GetStatus)
+        testProbe.send(streamline, Streamline.Query.GetStatus)
         testProbe.expectMsg(StreamlineState.Status.DESTROYED)
     }
 
@@ -104,12 +104,12 @@ internal class StreamlineTest {
                         TestPropertyHelper.githubPassword
                 )))
 
-        testProbe.send(streamline, Streamline.Command.GetStatus)
+        testProbe.send(streamline, Streamline.Query.GetStatus)
         testProbe.expectMsg(StreamlineState.Status.STARTED)
     }
 
     @Test
-    fun `receive a Fetch command should raise a Fetched event`() {
+    fun `receive a Fetch command should raise a Fetched event and update last fetched at in the state`() {
         `receive an Add command should raise a Created event and update a state to CREATED`()
 
         testProbe.send(streamline, Streamline.Command.Fetch)
@@ -160,5 +160,15 @@ internal class StreamlineTest {
         }
 
         assertEquals("SchedulerService `FetchInterval (1000)` should be larger than 10000 ms", actual.message)
+    }
+
+    @Test
+    fun `receive a GetLastFetchedAt query should return a last fetched datetime`() {
+        `receive an Add command should raise a Created event and update a state to CREATED`()
+        testProbe.send(streamline, Streamline.Command.Fetch)
+
+        testProbe.send(streamline, Streamline.Query.GetLastFetchedAt)
+
+        testProbe.expectMsgClass(ZonedDateTime::class.java)
     }
 }

@@ -28,14 +28,20 @@ class Streamline(private val streamlineId: String)
 
     override fun createReceive(): Receive {
         return receiveBuilder()
+
                 .match(Command.Create::class.java) {
-                    create(it.register, it.registeredAt, it.fetcherConfig, it.notifiersConfig)
+                    create(it.register,
+                            it.registeredAt,
+                            it.fetcherConfig,
+                            it.notifiersConfig)
                 }
                 .matchEquals(Command.Destroy) { destroy() }
                 .matchEquals(Command.Start) { start() }
-                .matchEquals(Command.GetStatus) { sender.tell(state.status, self) }
                 .matchEquals(Command.Fetch) { fetch() }
                 .match(Command.Notify::class.java) { notify(it.reviews) }
+
+                .matchEquals(Query.GetStatus) { sender.tell(state.status, self) }
+                .matchEquals(Query.GetLastFetchedAt) { sender.tell(state.lastFetchedAt, self) }
                 .build()
     }
 
@@ -142,11 +148,15 @@ class Streamline(private val streamlineId: String)
 
         object Start
 
-        object GetStatus
-
         object Fetch
 
         data class Notify(val reviews: Set<Review>)
+    }
+
+    interface Query {
+        object GetStatus
+
+        object GetLastFetchedAt
     }
 
     interface Event : DomainEvent {
