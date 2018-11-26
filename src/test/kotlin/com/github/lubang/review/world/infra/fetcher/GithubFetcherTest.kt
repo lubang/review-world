@@ -4,6 +4,7 @@ import akka.actor.ActorRef
 import akka.actor.ActorSystem
 import akka.testkit.TestProbe
 import akka.testkit.javadsl.TestKit
+import com.github.lubang.review.world.TestPropertyHelper
 import com.github.lubang.review.world.domain.common.Review
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -18,18 +19,12 @@ internal class GithubFetcherTest {
 
     private lateinit var fetcher: ActorRef
 
-    private lateinit var githubUsername: String
-    private lateinit var githubPassword: String
-
     @BeforeEach
     private fun setup() {
         system = ActorSystem.create()
         testProbe = TestProbe(system)
 
         fetcher = system.actorOf(GithubFetcher.props())
-
-        githubUsername = System.getenv("GITHUB_USER")
-        githubPassword = System.getenv("GITHUB_PW")
     }
 
     @AfterEach
@@ -46,8 +41,8 @@ internal class GithubFetcherTest {
                         "https://api.github.com/graphql",
                         "lubang",
                         "review-world",
-                        githubUsername,
-                        githubPassword
+                        TestPropertyHelper.githubUsername,
+                        TestPropertyHelper.githubPassword
                 ))
         testProbe.send(fetcher, command)
 

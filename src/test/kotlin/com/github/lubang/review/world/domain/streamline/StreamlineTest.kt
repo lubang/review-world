@@ -4,6 +4,7 @@ import akka.actor.ActorRef
 import akka.actor.ActorSystem
 import akka.testkit.TestProbe
 import akka.testkit.javadsl.TestKit
+import com.github.lubang.review.world.TestPropertyHelper
 import com.github.lubang.review.world.domain.common.Review
 import com.github.lubang.review.world.infra.fetcher.GerritFetcher
 import com.github.lubang.review.world.infra.fetcher.GithubFetcher
@@ -26,9 +27,6 @@ internal class StreamlineTest {
 
     private lateinit var streamline: ActorRef
 
-    private lateinit var githubUsername: String
-    private lateinit var githubPassword: String
-
     @BeforeEach
     private fun setup() {
         system = ActorSystem.create()
@@ -38,9 +36,6 @@ internal class StreamlineTest {
         streamline = system.actorOf(Streamline.props("streamline_id"))
 
         system.eventStream().subscribe(eventSubscriber.ref(), Streamline.Event::class.java)
-
-        githubUsername = System.getenv("GITHUB_USER")
-        githubPassword = System.getenv("GITHUB_PW")
     }
 
     @AfterEach
@@ -50,9 +45,6 @@ internal class StreamlineTest {
 
     @Test
     fun `receive an Add command should raise a Created event and update a state to CREATED`() {
-        val githubUsername = System.getenv("GITHUB_USER")
-        val githubPassword = System.getenv("GITHUB_PW")
-
         val command = Streamline.Command.Create(
                 "lubang",
                 ZonedDateTime.parse("2018-10-19T00:00:00Z"),
@@ -61,8 +53,8 @@ internal class StreamlineTest {
                         "https://api.github.com/graphql",
                         "lubang",
                         "review-world",
-                        githubUsername,
-                        githubPassword
+                        TestPropertyHelper.githubUsername,
+                        TestPropertyHelper.githubPassword
                 ),
                 setOf(SlackNotifier.Config("https://webhook.slack.com/19284010", "#notify"))
         )
@@ -108,8 +100,8 @@ internal class StreamlineTest {
                         "https://api.github.com/graphql",
                         "lubang",
                         "review-world",
-                        githubUsername,
-                        githubPassword
+                        TestPropertyHelper.githubUsername,
+                        TestPropertyHelper.githubPassword
                 )))
 
         testProbe.send(streamline, Streamline.Command.GetStatus)

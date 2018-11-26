@@ -5,6 +5,7 @@ import akka.actor.ActorRef
 import akka.actor.ActorSystem
 import akka.testkit.TestProbe
 import akka.testkit.javadsl.TestKit
+import com.github.lubang.review.world.TestPropertyHelper
 import com.github.lubang.review.world.domain.common.Review
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -19,18 +20,12 @@ internal class SlackNotifierTest {
 
     private lateinit var notifier: ActorRef
 
-    private lateinit var slackWebhookUrl: String
-    private lateinit var slackChannel: String
-
     @BeforeEach
     private fun setup() {
         system = ActorSystem.create()
         testProbe = TestProbe(system)
 
         notifier = system.actorOf(SlackNotifier.props())
-
-        slackWebhookUrl = System.getenv("SLACK_WEBHOOK")
-        slackChannel = System.getenv("SLACK_CHANNEL")
     }
 
     @AfterEach
@@ -53,8 +48,8 @@ internal class SlackNotifierTest {
 
         val command = SlackNotifier.Command.Notify(
                 SlackNotifier.Config(
-                        slackWebhookUrl,
-                        slackChannel),
+                        TestPropertyHelper.slackWebhook,
+                        TestPropertyHelper.slackChannel),
                 setOf(review))
         testProbe.send(notifier, command)
 

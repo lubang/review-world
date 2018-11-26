@@ -20,3 +20,6 @@ out
 # Gradle
 .gradle
 build
+
+# Review world
+properties.test.env
