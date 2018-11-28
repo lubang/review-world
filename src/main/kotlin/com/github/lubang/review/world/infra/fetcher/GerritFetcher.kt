@@ -29,14 +29,15 @@ class GerritFetcher : AbstractActor() {
                     val (changes, err) = result
                     if (err == null) {
                         val reviews = changes
-                                ?.map { parseToReviews(streamlineId, it) }
+                                ?.map { parseToReviews(streamlineId, config, it) }
                                 ?.toSet()
                         originSender.tell(reviews, self)
                     }
                 }
     }
 
-    private fun parseToReviews(streamlineId: String, change: Change): Review {
+    private fun parseToReviews(streamlineId: String, config: Config, change: Change): Review {
+        val url = "${config.url}/r/c/${change._number}"
         return Review(
                 streamlineId,
                 "GERRIT+${change.id}",
@@ -44,6 +45,7 @@ class GerritFetcher : AbstractActor() {
                 change.branch,
                 change.subject,
                 change.owner._account_id,
+                url,
                 change.getCreatedAt(),
                 change.getUpdatedAt()
         )

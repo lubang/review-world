@@ -42,6 +42,7 @@ internal class SlackNotifierTest {
                 "mock_branch",
                 "mock_subject",
                 "mock_owner",
+                "review_url",
                 ZonedDateTime.parse("2018-10-19T00:00:00Z"),
                 ZonedDateTime.parse("2018-10-19T00:00:00Z")
         )

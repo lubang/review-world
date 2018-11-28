@@ -49,21 +49,23 @@ class GithubFetcher : AbstractActor() {
                     val (pullRequests, err) = result
                     if (err == null) {
                         val reviews = pullRequests
-                                ?.map { parseToReviews(streamlineId, config.repository, it) }
+                                ?.map { parseToReviews(streamlineId, config, it) }
                                 ?.toSet()
                         originSender.tell(reviews, self)
                     }
                 }
     }
 
-    private fun parseToReviews(streamlineId: String, project: String, pullRequest: PullRequest): Review {
+    private fun parseToReviews(streamlineId: String, config: Config, pullRequest: PullRequest): Review {
+        val url = "https://github.com/${config.owner}/${config.repository}/pull/${pullRequest.number}"
         return Review(
                 streamlineId,
                 "GITHUB-PR+${pullRequest.number}",
-                project,
+                config.repository,
                 pullRequest.headRefName,
                 pullRequest.title,
                 pullRequest.author.login,
+                url,
                 pullRequest.toReviewCreatedAt(),
                 pullRequest.toReviewUpdatedAt()
         )

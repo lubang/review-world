@@ -9,5 +9,6 @@ data class Review(val streamlineId: String,
                   val branch: String,
                   val subject: String,
                   val owner: String,
+                  val url: String,
                   val createdAt: ZonedDateTime,
                   val updatedAt: ZonedDateTime) : Serializable
