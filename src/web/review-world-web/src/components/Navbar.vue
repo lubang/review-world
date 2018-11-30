@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item has-text-weight-bold">#Review World/</router-link>
+      <router-link to="/" class="navbar-item has-text-weight-bold">#Review World.</router-link>
 
       <a
         role="button"

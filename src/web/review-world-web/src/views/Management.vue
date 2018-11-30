@@ -1,6 +1,6 @@
 <template>
   <section class="has-top-margin">
-    <b-tabs>
+    <b-tabs @change="changeTab">
       <b-tab-item label="Streamlines">
         <ListStreamline/>
       </b-tab-item>
@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { Action } from 'vuex-class'
 import CreateStreamline from '@/components/CreateStreamline.vue'
 import ListStreamline from '@/components/ListStreamline.vue'
 
@@ -22,5 +23,20 @@ import ListStreamline from '@/components/ListStreamline.vue'
     ListStreamline,
   },
 })
-export default class Management extends Vue {}
+export default class Management extends Vue {
+  private static readonly STREAMLINE_TAB = 0
+
+  @Action('fetchStreamlines')
+  private fetchStreamlines: any
+
+  private mounted() {
+    this.fetchStreamlines()
+  }
+
+  private changeTab(index: number) {
+    if (index === Management.STREAMLINE_TAB) {
+      this.fetchStreamlines()
+    }
+  }
+}
 </script>

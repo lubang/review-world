@@ -3,7 +3,7 @@
     <div class="field">
       <label class="label">Streamline Id</label>
       <div class="control">
-        <input class="input" type="text" placeholder="Unique Streamline Id">
+        <input class="input" type="text" v-model="streamlineId">
       </div>
     </div>
 
@@ -27,7 +27,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="number" placeholder="fetchInterval">
+                <input class="input" type="number" v-model="fetchInterval">
               </div>
             </div>
           </div>
@@ -39,7 +39,7 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" placeholder="url">
+                <input class="input" type="text" v-model="gerritUrl">
               </div>
             </div>
           </div>
@@ -51,7 +51,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="project">
+                <input class="input" type="text" v-model="gerritProject">
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="username">
+                <input class="input" type="text" v-model="gerritUsername">
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="password">
+                <input class="input" type="password" v-model="gerritPassword">
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="number" placeholder="fetchInterval">
+                <input class="input" type="number" v-model="fetchInterval">
               </div>
             </div>
           </div>
@@ -101,7 +101,7 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" placeholder="githubGraphQlUrl">
+                <input class="input" type="text" v-model="githubGraphQlUrl">
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="owner">
+                <input class="input" type="text" v-model="githubOwner">
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="repository">
+                <input class="input" type="text" v-model="githubRepository">
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="username">
+                <input class="input" type="text" v-model="githubUsername">
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="password">
+                <input class="input" type="password" v-model="githubPassword">
               </div>
             </div>
           </div>
@@ -176,7 +176,7 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" placeholder="webhookUrl">
+                <input class="input" type="text" v-model="slackWebhookUrl">
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@
           <div class="field-body">
             <div class="field is-narrow">
               <div class="control">
-                <input class="input" type="text" placeholder="channel">
+                <input class="input" type="text" v-model="slackChannel">
               </div>
             </div>
           </div>
@@ -198,10 +198,10 @@
 
     <div class="field is-grouped is-command">
       <div class="control">
-        <button class="button is-link">Submit</button>
+        <button class="button is-link" @click="submitToCreateStream">Submit</button>
       </div>
       <div class="control">
-        <button class="button is-text">Cancel</button>
+        <button class="button is-text" @click="cancelToCreateStream">Cancel</button>
       </div>
     </div>
   </div>
@@ -221,10 +221,78 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { Action } from 'vuex-class'
+import { IdUtil } from '@/utils/IdUtil'
 
 @Component
 export default class CreateStreamline extends Vue {
+  private streamlineId = IdUtil.generateUuid()
+
   private fetcherType = 'Gerrit'
   private notifierType = 'Slack'
+
+  private fetchInterval = 10000
+
+  private gerritUrl = 'https://gerrit.url'
+  private gerritProject = ''
+  private gerritUsername = ''
+  private gerritPassword = ''
+
+  private githubGraphQlUrl = 'https://api.github.com/graphql'
+  private githubOwner = ''
+  private githubRepository = ''
+  private githubUsername = ''
+  private githubPassword = ''
+
+  private slackWebhookUrl = ''
+  private slackChannel = ''
+
+  @Action('createStreamline')
+  private createStreamline: any
+
+  private getFetcherConfig() {
+    if (this.fetcherType === 'Gerrit') {
+      return {
+        fetchInterval: this.fetchInterval,
+        url: this.gerritUrl,
+        project: this.gerritProject,
+        username: this.gerritUsername,
+        password: this.gerritPassword,
+      }
+    } else {
+      return {
+        fetchInterval: this.fetchInterval,
+        githubGraphQlUrl: this.githubGraphQlUrl,
+        githubOwner: this.githubOwner,
+        githubRepository: this.githubRepository,
+        githubUsername: this.githubUsername,
+        githubPassword: this.githubPassword,
+      }
+    }
+  }
+
+  private getNotifierConfig() {
+    return {
+      webhookUrl: this.slackWebhookUrl,
+      channel: this.slackChannel,
+    }
+  }
+
+  private submitToCreateStream() {
+    const payload = {
+      streamlineId: this.streamlineId,
+      data: {
+        fetcherType: this.fetcherType,
+        fetcherConfig: this.getFetcherConfig(),
+        notifierType: this.notifierType,
+        notifierConfig: this.getNotifierConfig(),
+      },
+    }
+    this.createStreamline(payload)
+  }
+
+  private cancelToCreateStream() {
+    this.streamlineId = IdUtil.generateUuid()
+  }
 }
 </script>
