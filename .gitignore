@@ -21,6 +21,10 @@ out
 .gradle
 build
 
-# Review world
+# Review world (Dev)
 properties.test.env
 src/main/resources/web
+
+# Review world (Data)
+journal
+snapshots
