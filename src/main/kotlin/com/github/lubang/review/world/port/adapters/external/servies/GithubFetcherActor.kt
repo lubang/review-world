@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpPost
 import com.github.lubang.review.world.domain.common.FetcherConfig
 import com.github.lubang.review.world.domain.common.Review
+import com.github.lubang.review.world.port.adapters.actor.models.AkkaStreamlineActor
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import java.time.ZonedDateTime
@@ -50,7 +51,9 @@ class GithubFetcherActor : AbstractActor() {
                         val reviews = pullRequests
                                 ?.map { parseToReviews(streamlineId, config, it) }
                                 ?.toSet()
-                        originSender.tell(reviews, self)
+                        if (reviews != null) {
+                            originSender.tell(AkkaStreamlineActor.Notify(reviews), self)
+                        }
                     }
                 }
     }

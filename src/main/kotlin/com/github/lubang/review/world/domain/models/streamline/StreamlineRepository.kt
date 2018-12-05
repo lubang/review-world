@@ -1,4 +1,4 @@
-package com.github.lubang.review.world.domain.entities.streamline
+package com.github.lubang.review.world.domain.models.streamline
 
 interface StreamlineRepository {
 

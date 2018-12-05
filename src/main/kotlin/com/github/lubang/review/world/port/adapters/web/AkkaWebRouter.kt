@@ -3,7 +3,7 @@ package com.github.lubang.review.world.port.adapters.web
 import akka.http.javadsl.server.HttpApp
 import akka.http.javadsl.server.PathMatchers.remainingPath
 import akka.http.javadsl.server.Route
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 
 
 class AkkaWebRouter(repository: StreamlineRepository) : HttpApp() {

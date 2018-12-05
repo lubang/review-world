@@ -1,4 +1,4 @@
-package com.github.lubang.review.world.port.adapters.actor.model
+package com.github.lubang.review.world.port.adapters.actor.models
 
 import akka.actor.Props
 import akka.pattern.PatternsCS
@@ -7,8 +7,8 @@ import akka.persistence.SnapshotOffer
 import com.github.lubang.review.world.domain.common.FetcherConfig
 import com.github.lubang.review.world.domain.common.NotifierConfig
 import com.github.lubang.review.world.domain.common.Review
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineEvent
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineState
+import com.github.lubang.review.world.domain.models.streamline.StreamlineEvent
+import com.github.lubang.review.world.domain.models.streamline.StreamlineState
 import com.github.lubang.review.world.port.adapters.external.servies.GerritFetcherActor
 import com.github.lubang.review.world.port.adapters.external.servies.GithubFetcherActor
 import com.github.lubang.review.world.port.adapters.external.servies.SlackNotifierActor
@@ -66,11 +66,13 @@ class AkkaStreamlineActor(private val streamlineId: String)
                     FETCH_TIMEOUT)
             else -> throw IllegalArgumentException("Invalid fetch config `$config`")
         }
-        PatternsCS.pipe(response, context.dispatcher()).run {
+        PatternsCS.pipe(response, context.dispatcher()).to(self)
+
+        response.thenApply {
             val event = StreamlineEvent.Fetched(streamlineId, ZonedDateTime.now())
             persist(event) {
-                state.update(it)
-                context.system().eventStream().publish(it)
+                state.update(event)
+                context.system().eventStream().publish(event)
             }
         }
     }
@@ -90,8 +92,7 @@ class AkkaStreamlineActor(private val streamlineId: String)
                     notifier,
                     SlackNotifierActor.Notify(config, review),
                     FETCH_TIMEOUT)
-
-            PatternsCS.pipe(response, context.dispatcher()).run {
+            response.thenApply {
                 val event = StreamlineEvent.Notified(streamlineId,
                         review,
                         "SlackNotifier",

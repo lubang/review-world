@@ -5,9 +5,9 @@ import akka.http.javadsl.ConnectHttp
 import akka.http.javadsl.Http
 import akka.stream.ActorMaterializer
 import com.github.lubang.review.world.ReviewWorldApplication
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 import com.github.lubang.review.world.port.adapters.actor.AkkaSupport
-import com.github.lubang.review.world.port.adapters.actor.model.AkkaStreamlineSchedulerActor
+import com.github.lubang.review.world.port.adapters.actor.models.AkkaStreamlineSchedulerActor
 import com.github.lubang.review.world.port.adapters.web.AkkaWebRouter
 import javax.inject.Inject
 
@@ -19,7 +19,6 @@ class AkkaReviewWorldApplication
     private val port = 8090
 
     override fun start() {
-        AkkaSupport.initialize(ActorSystem.create("ReviewWorld"))
         val system = AkkaSupport.system
 
         startScheduler(system)

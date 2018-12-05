@@ -6,8 +6,8 @@ import akka.testkit.javadsl.TestKit
 import com.github.lubang.review.world.TestPropertyHelper
 import com.github.lubang.review.world.application.command.CreateStreamlineCommand
 import com.github.lubang.review.world.domain.common.Review
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineEvent
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineEvent
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 import com.github.lubang.review.world.domain.event.DomainEvent
 import com.github.lubang.review.world.domain.event.DomainEventBus
 import com.github.lubang.review.world.domain.event.DomainEventSubscriber

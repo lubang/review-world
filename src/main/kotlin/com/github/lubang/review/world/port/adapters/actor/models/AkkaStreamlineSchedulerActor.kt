@@ -1,10 +1,10 @@
-package com.github.lubang.review.world.port.adapters.actor.model
+package com.github.lubang.review.world.port.adapters.actor.models
 
 import akka.actor.AbstractActor
 import akka.actor.Cancellable
 import akka.actor.Props
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineEvent
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineEvent
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 

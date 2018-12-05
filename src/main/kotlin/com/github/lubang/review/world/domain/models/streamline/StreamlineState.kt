@@ -1,4 +1,4 @@
-package com.github.lubang.review.world.domain.entities.streamline
+package com.github.lubang.review.world.domain.models.streamline
 
 import com.github.lubang.review.world.domain.common.FetcherConfig
 import com.github.lubang.review.world.domain.common.NotifierConfig
@@ -38,7 +38,7 @@ class StreamlineState {
             }
 
             is StreamlineEvent.Fetched -> {
-                if (lastFetchedAt != null && event.fetchedAt.isAfter(lastFetchedAt)) {
+                if (lastFetchedAt == null || event.fetchedAt.isAfter(lastFetchedAt)) {
                     lastFetchedAt = event.fetchedAt
                 }
             }
@@ -47,10 +47,6 @@ class StreamlineState {
                 mode = Mode.DESTROYED
             }
         }
-    }
-
-    fun isNormal(): Boolean {
-        return setOf(Mode.READY, Mode.AUTO_FETCH).contains(mode)
     }
 
     enum class Mode {

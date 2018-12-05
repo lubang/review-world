@@ -5,10 +5,9 @@ import akka.actor.ActorSystem
 import akka.testkit.TestProbe
 import akka.testkit.javadsl.TestKit
 import com.github.lubang.review.world.TestPropertyHelper
-import com.github.lubang.review.world.domain.common.Review
+import com.github.lubang.review.world.port.adapters.actor.models.AkkaStreamlineActor
 import com.github.lubang.review.world.port.adapters.external.servies.GerritFetcherActor
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -46,9 +45,6 @@ internal class GerritFetcherActorTest {
                 ))
         testProbe.send(fetcher, command)
 
-        val actual = testProbe.expectMsgClass(Set::class.java)
-        for (actualReview in actual) {
-            assertTrue(actualReview is Review)
-        }
+        testProbe.expectMsgClass(AkkaStreamlineActor.Notify::class.java)
     }
 }

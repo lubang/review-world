@@ -36,6 +36,7 @@ dependencies {
     compile("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
     compile("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion")
 
+    compile("com.google.guava:guava:27.0.1-jre")
     compile("com.google.inject:guice:4.2.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")

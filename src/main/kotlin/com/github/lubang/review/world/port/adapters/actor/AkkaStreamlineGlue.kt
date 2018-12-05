@@ -5,9 +5,9 @@ import akka.pattern.PatternsCS
 import com.github.lubang.review.world.domain.common.FetcherConfig
 import com.github.lubang.review.world.domain.common.NotifierConfig
 import com.github.lubang.review.world.domain.common.Review
-import com.github.lubang.review.world.domain.entities.streamline.Streamline
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineState
-import com.github.lubang.review.world.port.adapters.actor.model.AkkaStreamlineActor.*
+import com.github.lubang.review.world.domain.models.streamline.Streamline
+import com.github.lubang.review.world.domain.models.streamline.StreamlineState
+import com.github.lubang.review.world.port.adapters.actor.models.AkkaStreamlineActor.*
 import java.util.concurrent.CompletionStage
 
 class AkkaStreamlineGlue(private val streamlineId: String,

@@ -1,4 +1,4 @@
-package com.github.lubang.review.world.domain.entities.streamline
+package com.github.lubang.review.world.domain.models.streamline
 
 import com.github.lubang.review.world.domain.common.FetcherConfig
 import com.github.lubang.review.world.domain.common.NotifierConfig

@@ -10,7 +10,7 @@ import com.github.lubang.review.world.application.query.StreamlineInfo
 import com.github.lubang.review.world.application.query.StreamlineQueryModel
 import com.github.lubang.review.world.domain.common.FetcherConfig
 import com.github.lubang.review.world.domain.common.NotifierConfig
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 import com.github.lubang.review.world.port.adapters.serialization.GsonSupport
 import java.time.ZonedDateTime
 

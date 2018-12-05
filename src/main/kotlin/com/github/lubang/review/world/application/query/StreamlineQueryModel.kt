@@ -1,6 +1,6 @@
 package com.github.lubang.review.world.application.query
 
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 import java.util.concurrent.CompletionStage
 
 class StreamlineQueryModel(private val streamlineRepository: StreamlineRepository) {

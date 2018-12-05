@@ -1,6 +1,6 @@
 package com.github.lubang.review.world.application.command
 
-import com.github.lubang.review.world.domain.entities.streamline.StreamlineRepository
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 
 class StreamlineCommandHandler(private val repository: StreamlineRepository) {
 
