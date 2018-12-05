@@ -33,7 +33,7 @@ internal class GithubFetcherActorTest {
     }
 
     @Test
-    fun `receive a Fetch should return a reviews`() {
+    fun `receive a Fetch should return a Notify command`() {
         val command = GithubFetcherActor.Fetch(
                 "streamline_id",
                 GithubFetcherActor.Config(

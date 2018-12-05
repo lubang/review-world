@@ -6,11 +6,10 @@ import akka.testkit.javadsl.TestKit
 import com.github.lubang.review.world.TestPropertyHelper
 import com.github.lubang.review.world.application.command.CreateStreamlineCommand
 import com.github.lubang.review.world.domain.common.Review
-import com.github.lubang.review.world.domain.models.streamline.StreamlineEvent
-import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
-import com.github.lubang.review.world.domain.event.DomainEvent
 import com.github.lubang.review.world.domain.event.DomainEventBus
 import com.github.lubang.review.world.domain.event.DomainEventSubscriber
+import com.github.lubang.review.world.domain.models.streamline.StreamlineEvent
+import com.github.lubang.review.world.domain.models.streamline.StreamlineRepository
 import com.github.lubang.review.world.port.adapters.actor.AkkaSupport
 import com.github.lubang.review.world.port.adapters.external.servies.GerritFetcherActor
 import com.github.lubang.review.world.port.adapters.external.servies.GithubFetcherActor
@@ -32,14 +31,15 @@ internal class StreamlineSpec {
 
     @BeforeEach
     private fun setup() {
-        AkkaSupport.initialize(ActorSystem.create("ReviewWorld-Test"))
+        AkkaSupport.initialize(ActorSystem.create("review-world-dev"))
 
         testProbe = TestProbe(AkkaSupport.system)
+
         repository = AkkaStreamlineRepository()
         eventBus = AkkaDomainEventBus()
         subscriber = AkkaDomainEventSubscriber(testProbe.ref())
 
-        eventBus.subscribe(subscriber, DomainEvent::class.java)
+        eventBus.subscribe(subscriber, StreamlineEvent::class.java)
     }
 
     @AfterEach
@@ -60,7 +60,10 @@ internal class StreamlineSpec {
                         TestPropertyHelper.githubUsername,
                         TestPropertyHelper.githubPassword
                 ),
-                setOf(SlackNotifierActor.Config("https://webhook.slack.com/19284010", "#notify")))
+                setOf(SlackNotifierActor.Config(
+                        TestPropertyHelper.slackWebhook,
+                        TestPropertyHelper.slackChannel))
+        )
 
         val actual = testProbe.expectMsgClass(StreamlineEvent.Created::class.java)
         assertEquals("test_id", actual.streamlineId)
@@ -91,7 +94,7 @@ internal class StreamlineSpec {
         `create a streamline should raise a Created event`()
 
         val streamlineId = "test_id"
-        val streamline = repository.getById(streamlineId)
+        val streamline = repository.get(streamlineId)
         streamline.fetch()
 
         val actual = testProbe.expectMsgClass(StreamlineEvent.Fetched::class.java)
@@ -107,13 +110,13 @@ internal class StreamlineSpec {
                 "mock_review_id",
                 "mock_project",
                 "mock_branch",
-                "mock_subject",
+                "for notification test message",
                 "mock_owner",
                 "review_url",
                 ZonedDateTime.parse("2018-10-19T00:00:00Z"),
                 ZonedDateTime.parse("2018-10-19T00:00:00Z"))
         val streamlineId = "test_id"
-        val streamline = repository.getById(streamlineId)
+        val streamline = repository.get(streamlineId)
         streamline.notify(setOf(review))
 
         val actual = testProbe.expectMsgClass(StreamlineEvent.Notified::class.java)

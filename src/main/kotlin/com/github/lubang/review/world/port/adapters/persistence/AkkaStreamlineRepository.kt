@@ -32,7 +32,7 @@ class AkkaStreamlineRepository : StreamlineRepository {
                 })
     }
 
-    override fun existById(streamlineId: String): Boolean {
+    override fun exist(streamlineId: String): Boolean {
         val response = PatternsCS.ask(lifecycleActor, AkkaStreamlineLifecycleActor.Exist(streamlineId), 1000)
                 .toCompletableFuture()
                 .get()
@@ -43,12 +43,12 @@ class AkkaStreamlineRepository : StreamlineRepository {
         return glueCache.get(streamlineId)
     }
 
-    override fun getById(streamlineId: String): Streamline {
+    override fun get(streamlineId: String): Streamline {
         return glueCache.get(streamlineId)
     }
 
     override fun delete(streamlineId: String) {
-        val streamline = getById(streamlineId)
+        val streamline = get(streamlineId)
         streamline.destroyStreamline()
         glueCache.invalidate(streamlineId)
     }

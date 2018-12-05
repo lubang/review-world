@@ -55,6 +55,8 @@ class GithubFetcherActor : AbstractActor() {
                             originSender.tell(AkkaStreamlineActor.Notify(reviews), self)
                         }
                     }
+
+                    context.stop(originSender)
                 }
     }
 

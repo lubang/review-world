@@ -12,7 +12,7 @@ class AkkaDomainEventBus : DomainEventBus {
     }
 
     override fun subscribe(subscriber: DomainEventSubscriber,
-                           channel: Class<DomainEvent>) {
+                           channel: Class<*>) {
         if (subscriber !is AkkaDomainEventSubscriber) {
             throw IllegalArgumentException("DomainEventSubscriber should be `AkkaDomainEventSubscriber`")
         }

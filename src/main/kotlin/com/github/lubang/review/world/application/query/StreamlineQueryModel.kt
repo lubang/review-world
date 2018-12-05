@@ -6,7 +6,7 @@ import java.util.concurrent.CompletionStage
 class StreamlineQueryModel(private val streamlineRepository: StreamlineRepository) {
 
     fun getStreamlineStatus(streamlineId: String): CompletionStage<StreamlineInfo> {
-        val streamline = streamlineRepository.getById(streamlineId)
+        val streamline = streamlineRepository.get(streamlineId)
         val state = streamline.getState()
         return state.thenApply {
             StreamlineInfo(

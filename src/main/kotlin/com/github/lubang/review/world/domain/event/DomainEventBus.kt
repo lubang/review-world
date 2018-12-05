@@ -4,7 +4,7 @@ interface DomainEventBus {
 
     fun publish(event: DomainEvent)
 
-    fun subscribe(subscriber: DomainEventSubscriber, channel: Class<DomainEvent>)
+    fun subscribe(subscriber: DomainEventSubscriber, channel: Class<*>)
 
     fun unsubscribe(subscriber: DomainEventSubscriber)
 

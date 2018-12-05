@@ -5,7 +5,7 @@ import com.github.lubang.review.world.domain.models.streamline.StreamlineReposit
 class StreamlineCommandHandler(private val repository: StreamlineRepository) {
 
     fun execute(command: CreateStreamlineCommand) {
-        if (repository.existById(command.streamlineId)) {
+        if (repository.exist(command.streamlineId)) {
             throw IllegalArgumentException("Streamline `${command.streamlineId}` is already created")
         }
 
@@ -17,7 +17,7 @@ class StreamlineCommandHandler(private val repository: StreamlineRepository) {
     }
 
     fun execute(command: FetchStreamlineCommand) {
-        val streamline = repository.getById(command.streamlineId)
+        val streamline = repository.get(command.streamlineId)
         streamline.fetch()
     }
 

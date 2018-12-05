@@ -68,7 +68,7 @@ class AkkaStreamlineActor(private val streamlineId: String)
         }
         PatternsCS.pipe(response, context.dispatcher()).to(self)
 
-        response.thenApply {
+        PatternsCS.pipe(response, context.dispatcher()).run {
             val event = StreamlineEvent.Fetched(streamlineId, ZonedDateTime.now())
             persist(event) {
                 state.update(event)
@@ -86,30 +86,33 @@ class AkkaStreamlineActor(private val streamlineId: String)
     }
 
     private fun notifyBySlack(config: SlackNotifierActor.Config, reviews: Set<Review>) {
+        val notifier = context.actorOf(SlackNotifierActor.props())
+
         for (review in reviews) {
-            val notifier = context.actorOf(SlackNotifierActor.props())
             val response = PatternsCS.ask(
                     notifier,
                     SlackNotifierActor.Notify(config, review),
                     FETCH_TIMEOUT)
-            response.thenApply {
+            PatternsCS.pipe(response, context.dispatcher()).run {
                 val event = StreamlineEvent.Notified(streamlineId,
                         review,
                         "SlackNotifier",
                         ZonedDateTime.now())
                 persist(event) {
-                    state.update(it)
-                    context.system().eventStream().publish(it)
+                    state.update(event)
+                    context.system().eventStream().publish(event)
                 }
             }
         }
+
+        context.stop(notifier)
     }
 
     private fun destroy() {
         val event = StreamlineEvent.Destroyed(streamlineId, ZonedDateTime.now())
         persist(event) {
-            state.update(it)
-            context.system().eventStream().publish(it)
+            state.update(event)
+            context.system().eventStream().publish(event)
             context.stop(self)
         }
     }

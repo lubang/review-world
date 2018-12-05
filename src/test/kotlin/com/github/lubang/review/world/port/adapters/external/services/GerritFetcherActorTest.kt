@@ -33,7 +33,7 @@ internal class GerritFetcherActorTest {
     }
 
     @Test
-    fun `receive a Fetch should return a reviews`() {
+    fun `receive a Fetch should return a Notify command`() {
         val command = GerritFetcherActor.Fetch(
                 "streamline_id",
                 GerritFetcherActor.Config(

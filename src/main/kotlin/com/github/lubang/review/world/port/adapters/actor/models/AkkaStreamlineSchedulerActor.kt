@@ -27,7 +27,7 @@ class AkkaStreamlineSchedulerActor(private val repository: StreamlineRepository)
     }
 
     private fun startAutoFetch(streamlineId: String) {
-        val streamline = repository.getById(streamlineId)
+        val streamline = repository.get(streamlineId)
         streamline.getState().thenApply {
             val fetchInterval = it.fetcherConfig!!.fetchInterval
             val cancellable = context.system.scheduler.schedule(
@@ -47,7 +47,7 @@ class AkkaStreamlineSchedulerActor(private val repository: StreamlineRepository)
     }
 
     private fun schedule(streamlineId: String) {
-        val streamline = repository.getById(streamlineId)
+        val streamline = repository.get(streamlineId)
         streamline.fetch()
     }
 
