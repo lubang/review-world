@@ -6,7 +6,7 @@ import com.google.gson.stream.JsonWriter
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class ZonedDateTimeTypeAdapter : TypeAdapter<ZonedDateTime>() {
+class GsonZonedDateTimeTypeAdapter : TypeAdapter<ZonedDateTime>() {
     override fun write(writer: JsonWriter, value: ZonedDateTime?) {
         if (value == null) {
             writer.nullValue()

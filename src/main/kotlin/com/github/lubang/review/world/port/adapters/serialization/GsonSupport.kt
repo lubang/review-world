@@ -11,14 +11,14 @@ import java.time.ZonedDateTime
 object GsonSupport {
     val gson = GsonBuilder()
             .registerTypeAdapterFactory(
-                    RuntimeTypeAdapterFactory.of(FetcherConfig::class.java)
+                    GsonRuntimeTypeAdapterFactory.of(FetcherConfig::class.java)
                             .registerSubtype(GerritFetcherActor.Config::class.java, "GerritFetcher")
                             .registerSubtype(GithubFetcherActor.Config::class.java, "GithubFetcher")
             )
             .registerTypeAdapterFactory(
-                    RuntimeTypeAdapterFactory.of(NotifierConfig::class.java)
+                    GsonRuntimeTypeAdapterFactory.of(NotifierConfig::class.java)
                             .registerSubtype(SlackNotifierActor.Config::class.java, "SlackNotifier")
             )
-            .registerTypeAdapter(ZonedDateTime::class.java, ZonedDateTimeTypeAdapter())
+            .registerTypeAdapter(ZonedDateTime::class.java, GsonZonedDateTimeTypeAdapter())
             .create()!!
 }
