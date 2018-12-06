@@ -11,10 +11,6 @@ class ReviewWorldModule : AbstractModule() {
     override fun configure() {
         super.configure()
 
-        bindAkka()
-    }
-
-    private fun bindAkka() {
         AkkaSupport.initialize(ActorSystem.create("review-world"))
 
         bind(ReviewWorldApplication::class.java).to(AkkaReviewWorldApplication::class.java)
